@@ -49,6 +49,39 @@
             margin: 10px auto;
             line-height: 1.6;
         }
+        .problems-section {
+            margin: 30px auto;
+            max-width: 800px;
+            text-align: left;
+        }
+        .mnemonic {
+            font-size: 18px;
+            color: #1a73e8;
+            margin: 20px 0;
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 6px;
+        }
+        .problem {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .problem h3 {
+            color: #1a73e8;
+            margin-top: 0;
+        }
+        .solution {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff;
+            border-left: 3px solid #1a73e8;
+        }
+        .solution p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +103,7 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let step = 0;
+        let isRectangle = false;
         const W = 400, H = 240;
         const startX = 100, startY = 60;
 
@@ -107,23 +141,33 @@
             ctx.rect(0,0,W,H);
             ctx.stroke();
 
-            // 画楼梯
-            ctx.beginPath();
-            ctx.strokeStyle="#1a73e8";
-            ctx.lineWidth=3;
-            ctx.moveTo(0,0);
-            for(let i=0;i<seg;i++){
-                ctx.lineTo(stair[i].x + sw, stair[i].y);
-                ctx.lineTo(stair[i].x + sw, stair[i].y + sh);
+            if (isRectangle) {
+                // 画长方形
+                ctx.beginPath();
+                ctx.strokeStyle="#1a73e8";
+                ctx.lineWidth=3;
+                ctx.rect(0,0,W,H);
+                ctx.stroke();
+            } else {
+                // 画楼梯
+                ctx.beginPath();
+                ctx.strokeStyle="#1a73e8";
+                ctx.lineWidth=3;
+                ctx.moveTo(0,0);
+                for(let i=0;i<seg;i++){
+                    ctx.lineTo(stair[i].x + sw, stair[i].y);
+                    ctx.lineTo(stair[i].x + sw, stair[i].y + sh);
+                }
+                ctx.lineTo(0,H);
+                ctx.closePath();
+                ctx.stroke();
             }
-            ctx.lineTo(0,H);
-            ctx.closePath();
-            ctx.stroke();
             ctx.restore();
         }
 
         function playAnim(){
             step = 1;
+            isRectangle = false; // 重置矩形标志
             document.getElementById('tip').innerText = '第二步：开始向上、向右平移线段';
             let t = 0;
             const timer = setInterval(()=>{
@@ -131,11 +175,7 @@
                 if(t >= 1){
                     t = 1;
                     clearInterval(timer);
-                    // 设置最终位置
-                    stair.forEach(item=>{
-                        item.x = item.tx;
-                        item.y = item.ty;
-                    });
+                    isRectangle = true; // 设置为矩形状态
                     document.getElementById('tip').innerText = '第三步：平移完成，变成长方形，周长不变！';
                     drawBase();
                     return;
@@ -151,6 +191,7 @@
 
         function resetAnim(){
             step = 0;
+            isRectangle = false; // 重置矩形标志
             document.getElementById('tip').innerText = '第一步：原始楼梯图形';
             stair.forEach(item=>{
                 item.x = item.ox; // 重置x到原始位置
@@ -162,5 +203,57 @@
         // 初始绘制
         drawBase();
     </script>
+    
+    <div class="problems-section">
+        <h2>平移法求周长 练习题（三年级专用）</h2>
+        <p class="mnemonic">口诀：<strong>横线上下来平移，竖线左右来平移，拼成长宽再计算，多出来的加上去</strong></p>
+        
+        <div class="problem">
+            <h3>第1题（楼梯型）</h3>
+            <p>一个楼梯形状图形，最外围长12cm，宽7cm，求周长。</p>
+            <div class="solution">
+                <p><strong>解答：</strong>平移后变成长方形</p>
+                <p>周长：\((12+7)×2 = \boldsymbol{38}\) 厘米</p>
+            </div>
+        </div>
+        
+        <div class="problem">
+            <h3>第2题（凸字形）</h3>
+            <p>凸字形图形，最外面长15cm，高8cm，凸出部分高3cm，求周长。</p>
+            <div class="solution">
+                <p><strong>解答：</strong>平移拼成大长方形，多2条3cm竖边</p>
+                <p>长方形周长：\((15+8)×2=46\) 厘米</p>
+                <p>多加：\(3×2=6\) 厘米</p>
+                <p><strong>总周长：\(\boldsymbol{52}\) 厘米</strong></p>
+            </div>
+        </div>
+        
+        <div class="problem">
+            <h3>第3题（凹字形）</h3>
+            <p>凹进去图形，外围长20cm，宽10cm，凹进去深4cm，求周长。</p>
+            <div class="solution">
+                <p><strong>解答：</strong>平移变长方形，多2条4cm的边</p>
+                <p><strong>总周长：\(\boldsymbol{(20+10)×2 + 4×2 = 68}\) 厘米</strong></p>
+            </div>
+        </div>
+        
+        <div class="problem">
+            <h3>第4题</h3>
+            <p>不规则拐角图形，外围长9米，宽6米，求周长。</p>
+            <div class="solution">
+                <p><strong>解答：</strong>平移刚好变长方形</p>
+                <p><strong>周长：\(\boldsymbol{(9+6)×2 = 30}\) 米</strong></p>
+            </div>
+        </div>
+        
+        <div class="problem">
+            <h3>第5题</h3>
+            <p>正方形缺一个小角（阶梯状），大正方形边长16cm，求周长。</p>
+            <div class="solution">
+                <p><strong>解答：</strong>平移后周长不变，还是正方形周长</p>
+                <p><strong>周长：\(\boldsymbol{16×4 = 64}\) 厘米</strong></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
