@@ -82,215 +82,446 @@
         .solution p {
             margin: 5px 0;
         }
+        
+        /* 导航按钮样式 */
+        .nav-box {
+            margin: 20px 0;
+        }
+        .nav-box button {
+            padding: 10px 25px;
+            font-size: 16px;
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ccc;
+        }
+        .nav-box button.active {
+            background: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+        .nav-box button:hover {
+            background: #e0e0e0;
+        }
+        .nav-box button.active:hover {
+            background: #0d5bbd;
+        }
+        
+        /* 问题区域样式 */
+        .problem-section {
+            display: none;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .problem-section.active {
+            display: block;
+        }
+        .problem-section h3 {
+            color: #1a73e8;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .problem-statement {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 6px;
+        }
+        .problem-section canvas {
+            display: block;
+            margin: 15px auto;
+        }
+        .problem-section .btn-box {
+            margin: 10px 0;
+        }
+        .problem-section .solution {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-left: 4px solid #1a73e8;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <h2>小学三年级 平移法求周长 动画演示</h2>
-    <div class="tip" id="tip">第一步：原始楼梯图形</div>
-    <div class="container">
-        <canvas id="canvas" width="600" height="350"></canvas>
+    <p class="mnemonic">口诀：<strong>横线上下来平移，竖线左右来平移，拼成长宽再计算，多出来的加上去</strong></p>
+    
+    <!-- 导航按钮 -->
+    <div class="nav-box">
+        <button onclick="showProblem(1)" id="btn1" class="active">第1题</button>
+        <button onclick="showProblem(2)" id="btn2">第2题</button>
+        <button onclick="showProblem(3)" id="btn3">第3题</button>
+        <button onclick="showProblem(4)" id="btn4">第4题</button>
+        <button onclick="showProblem(5)" id="btn5">第5题</button>
     </div>
-    <div class="btn-box">
-        <button onclick="playAnim()">开始平移动画</button>
-        <button onclick="resetAnim()">重置</button>
+
+    <!-- 第1题：楼梯型 -->
+    <div id="problem1" class="problem-section active">
+        <h3>第1题：楼梯型</h3>
+        <div class="problem-statement">一个楼梯形状图形，最外围长12cm，宽7cm，求周长。</div>
+        <canvas id="canvas1" width="600" height="350"></canvas>
+        <div class="btn-box">
+            <button onclick="toggleTranslate(1)">显示平移过程</button>
+            <button onclick="resetProblem(1)">重置</button>
+        </div>
+        <div class="solution">
+            <p><strong>解答：</strong>平移后变成长方形</p>
+            <p>周长：(12+7)×2 = <strong>38</strong> 厘米</p>
+        </div>
     </div>
-    <div class="explain" id="explain">
-        原理：把楼梯横着的短线向上平移，竖着的短线向右平移，<br>
-        最后拼成一个完整长方形，周长大小不变，直接用长方形周长公式计算。
+
+    <!-- 第2题：凸字形 -->
+    <div id="problem2" class="problem-section">
+        <h3>第2题：凸字形</h3>
+        <div class="problem-statement">凸字形图形，最外面长15cm，高8cm，凸出部分高3cm，求周长。</div>
+        <canvas id="canvas2" width="600" height="350"></canvas>
+        <div class="btn-box">
+            <button onclick="toggleTranslate(2)">显示平移过程</button>
+            <button onclick="resetProblem(2)">重置</button>
+        </div>
+        <div class="solution">
+            <p><strong>解答：</strong>平移拼成大长方形，多2条3cm竖边</p>
+            <p>长方形周长：(15+8)×2 = 46 厘米</p>
+            <p>多加：3×2 = 6 厘米</p>
+            <p><strong>总周长：52 厘米</strong></p>
+        </div>
+    </div>
+
+    <!-- 第3题：凹字形 -->
+    <div id="problem3" class="problem-section">
+        <h3>第3题：凹字形</h3>
+        <div class="problem-statement">凹进去图形，外围长20cm，宽10cm，凹进去深4cm，求周长。</div>
+        <canvas id="canvas3" width="600" height="350"></canvas>
+        <div class="btn-box">
+            <button onclick="toggleTranslate(3)">显示平移过程</button>
+            <button onclick="resetProblem(3)">重置</button>
+        </div>
+        <div class="solution">
+            <p><strong>解答：</strong>平移变长方形，多2条4cm的边</p>
+            <p><strong>总周长：(20+10)×2 + 4×2 = 68 厘米</strong></p>
+        </div>
+    </div>
+
+    <!-- 第4题：不规则拐角 -->
+    <div id="problem4" class="problem-section">
+        <h3>第4题：不规则拐角</h3>
+        <div class="problem-statement">不规则拐角图形，外围长9米，宽6米，求周长。</div>
+        <canvas id="canvas4" width="600" height="350"></canvas>
+        <div class="btn-box">
+            <button onclick="toggleTranslate(4)">显示平移过程</button>
+            <button onclick="resetProblem(4)">重置</button>
+        </div>
+        <div class="solution">
+            <p><strong>解答：</strong>平移刚好变长方形</p>
+            <p><strong>周长：(9+6)×2 = 30 米</strong></p>
+        </div>
+    </div>
+
+    <!-- 第5题：正方形缺角 -->
+    <div id="problem5" class="problem-section">
+        <h3>第5题：正方形缺角</h3>
+        <div class="problem-statement">正方形缺一个小角（阶梯状），大正方形边长16cm，求周长。</div>
+        <canvas id="canvas5" width="600" height="350"></canvas>
+        <div class="btn-box">
+            <button onclick="toggleTranslate(5)">显示平移过程</button>
+            <button onclick="resetProblem(5)">重置</button>
+        </div>
+        <div class="solution">
+            <p><strong>解答：</strong>平移后周长不变，还是正方形周长</p>
+            <p><strong>周长：16×4 = 64 厘米</strong></p>
+        </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let step = 0;
-        let isRectangle = false;
-        let timer1 = null, timer2 = null; // 存储定时器，用于重置时清除
-        const W = 400, H = 240;
-        const startX = 100, startY = 60;
+        // 每道题的平移状态
+        const problemStates = {
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false
+        };
 
-        // 原始阶梯坐标
-        let lines = [
-            {x1:0,y1:0,x2:W,y2:0, ox1:0,oy1:0,ox2:W,oy2:0},
-            {x1:W,y1:0,x2:W,y2:H, ox1:W,oy1:0,ox2:W,oy2:H},
-            {x1:W,y1:H,x2:0,y2:H, ox1:W,oy1:H,ox2:0,oy2:H},
-            {x1:0,y1:H,x2:0,y2:0, ox1:0,oy1:H,ox2:0,oy2:0}
-        ];
-        // 楼梯台阶分段
-        let stair = [];
-        const seg = 4;
-        let sw = W/seg, sh = H/seg;
-        for(let i=0;i<seg;i++){
-            stair.push({
-                x: i*sw,
-                y: i*sh,
-                ox: i*sw,   // 原始x坐标
-                oy: i*sh,   // 原始y坐标
-                tx: (seg-1)*sw, // 目标x坐标（竖线平移至x=W处）
-                ty: 0        // 目标y坐标（横线平移至y=0处）
-            });
+        // 导航函数
+        function showProblem(n) {
+            // 隐藏所有问题区域
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('problem' + i).classList.remove('active');
+                document.getElementById('btn' + i).classList.remove('active');
+            }
+            // 显示选中的问题
+            document.getElementById('problem' + n).classList.add('active');
+            document.getElementById('btn' + n).classList.add('active');
+            // 重置该问题的状态
+            resetProblem(n);
         }
 
-        function drawBase(){
-            ctx.clearRect(0,0,canvas.width,canvas.height);
+        // 切换平移状态
+        function toggleTranslate(n) {
+            problemStates[n] = !problemStates[n];
+            drawProblem(n, problemStates[n]);
+        }
+
+        // 重置问题
+        function resetProblem(n) {
+            problemStates[n] = false;
+            drawProblem(n, false);
+        }
+
+        // 绘制问题1：楼梯型
+        function drawProblem1(isTranslated) {
+            const canvas = document.getElementById('canvas1');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 25;
+            const W = 12 * scale;
+            const H = 7 * scale;
+            const startX = 100;
+            const startY = 80;
+            
             ctx.save();
             ctx.translate(startX, startY);
-
-            // 外框灰色
+            
+            // 外框灰色参考线
             ctx.beginPath();
-            ctx.strokeStyle="#ccc";
-            ctx.lineWidth=2;
-            ctx.rect(0,0,W,H);
+            ctx.strokeStyle = "#eee";
+            ctx.lineWidth = 1;
+            ctx.rect(0, 0, W, H);
             ctx.stroke();
-
-            if (isRectangle) {
-                // 画长方形
-                ctx.beginPath();
-                ctx.strokeStyle="#1a73e8";
-                ctx.lineWidth=3;
-                ctx.rect(0,0,W,H);
-                ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.strokeStyle = "#1a73e8";
+            ctx.lineWidth = 3;
+            
+            if (isTranslated) {
+                // 平移后：完整长方形
+                ctx.rect(0, 0, W, H);
             } else {
-                // 画楼梯
-                ctx.beginPath();
-                ctx.strokeStyle="#1a73e8";
-                ctx.lineWidth=3;
-                ctx.moveTo(0,0);
-                for(let i=0;i<seg;i++){
-                    ctx.lineTo(stair[i].x + sw, stair[i].y);
-                    ctx.lineTo(stair[i].x + sw, stair[i].y + sh);
+                // 原始：楼梯形状
+                const seg = 4;
+                const sw = W / seg;
+                const sh = H / seg;
+                ctx.moveTo(0, 0);
+                for (let i = 0; i < seg; i++) {
+                    ctx.lineTo(sw * (i + 1), sh * i);
+                    ctx.lineTo(sw * (i + 1), sh * (i + 1));
                 }
-                ctx.lineTo(0,H);
+                ctx.lineTo(0, H);
                 ctx.closePath();
-                ctx.stroke();
             }
+            ctx.stroke();
             ctx.restore();
         }
 
-        function playAnim(){
-            // 清除可能存在的旧定时器
-            if (timer1) clearInterval(timer1);
-            if (timer2) clearInterval(timer2);
-            step = 1;
-            isRectangle = false;
-            stair.forEach(item=>{
-                item.x = item.ox; // x初始化到原始位置
-                item.y = item.oy; // y初始化到原始位置
-            });
-            drawBase();
-            document.getElementById('tip').innerText = '第二步：向上平移横线（y方向）';
-            let t1 = 0;
-            // 第一阶段：向上平移（y方向），t1从0到1
-            timer1 = setInterval(()=>{
-                t1 += 0.05;
-                if(t1 >= 1){
-                    t1 = 1;
-                    clearInterval(timer1);
-                    // y方向平移完成，设置y到目标值
-                    stair.forEach(item=>{
-                        item.y = item.ty;
-                    });
-                    drawBase();
-                    document.getElementById('tip').innerText = '第三步：向右平移竖线（x方向）';
-                    let t2 = 0;
-                    // 第二阶段：向右平移（x方向），t2从0到1
-                    timer2 = setInterval(()=>{
-                        t2 += 0.05;
-                        if(t2 >= 1){
-                            t2 = 1;
-                            clearInterval(timer2);
-                            // x方向平移完成，设置x到目标值
-                            stair.forEach(item=>{
-                                item.x = item.tx;
-                            });
-                            isRectangle = true;
-                            document.getElementById('tip').innerText = '第四步：平移完成，变成长方形，周长不变！';
-                            drawBase();
-                            return;
-                        }
-                        // 只平移x，y保持不变
-                        stair.forEach(item=>{
-                            item.x = item.ox + (item.tx - item.ox) * t2;
-                        });
-                        drawBase();
-                    },30);
-                    return;
-                }
-                // 只平移y，x保持不变
-                stair.forEach(item=>{
-                    item.y = item.oy + (item.ty - item.oy) * t1;
-                });
-                drawBase();
-            },30);
+        // 绘制问题2：凸字形
+        function drawProblem2(isTranslated) {
+            const canvas = document.getElementById('canvas2');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 20;
+            const outerW = 15 * scale;
+            const outerH = 8 * scale;
+            const bumpH = 3 * scale;
+            const startX = 80;
+            const startY = 100;
+            
+            ctx.save();
+            ctx.translate(startX, startY);
+            
+            // 外框灰色参考线
+            ctx.beginPath();
+            ctx.strokeStyle = "#eee";
+            ctx.lineWidth = 1;
+            ctx.rect(0, 0, outerW, outerH);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.strokeStyle = "#1a73e8";
+            ctx.lineWidth = 3;
+            
+            if (isTranslated) {
+                // 平移后：完整大长方形 + 凸出部分的两条竖边
+                ctx.rect(0, 0, outerW, outerH);
+                // 凸出部分的两条竖边
+                ctx.moveTo(outerW - bumpH, outerH - bumpH);
+                ctx.lineTo(outerW - bumpH, outerH);
+                ctx.moveTo(outerW, outerH - bumpH);
+                ctx.lineTo(outerW, outerH);
+            } else {
+                // 原始：凸字形
+                // 外轮廓
+                ctx.moveTo(0, 0);
+                ctx.lineTo(outerW, 0);
+                ctx.lineTo(outerW, outerH - bumpH);
+                ctx.lineTo(outerW - bumpH, outerH - bumpH);
+                ctx.lineTo(outerW - bumpH, outerH);
+                ctx.lineTo(0, outerH);
+                ctx.closePath();
+            }
+            ctx.stroke();
+            ctx.restore();
         }
 
-        function resetAnim(){
-            // 清除可能存在的定时器
-            if (timer1) { clearInterval(timer1); timer1 = null; }
-            if (timer2) { clearInterval(timer2); timer2 = null; }
-            step = 0;
-            isRectangle = false; // 重置矩形标志
-            document.getElementById('tip').innerText = '第一步：原始楼梯图形';
-            stair.forEach(item=>{
-                item.x = item.ox; // 重置x到原始位置
-                item.y = item.oy; // 重置y到原始位置
-            });
-            drawBase();
+        // 绘制问题3：凹字形
+        function drawProblem3(isTranslated) {
+            const canvas = document.getElementById('canvas3');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 15;
+            const outerW = 20 * scale;
+            const outerH = 10 * scale;
+            const indentD = 4 * scale;
+            const startX = 60;
+            const startY = 80;
+            
+            ctx.save();
+            ctx.translate(startX, startY);
+            
+            // 外框灰色参考线
+            ctx.beginPath();
+            ctx.strokeStyle = "#eee";
+            ctx.lineWidth = 1;
+            ctx.rect(0, 0, outerW, outerH);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.strokeStyle = "#1a73e8";
+            ctx.lineWidth = 3;
+            
+            if (isTranslated) {
+                // 平移后：完整大长方形 + 凹进去的两条竖边
+                ctx.rect(0, 0, outerW, outerH);
+                // 凹进去的两条竖边
+                ctx.moveTo(indentD, indentD);
+                ctx.lineTo(indentD, outerH - indentD);
+                ctx.moveTo(0, indentD);
+                ctx.lineTo(0, outerH - indentD);
+            } else {
+                // 原始：凹字形
+                ctx.moveTo(0, 0);
+                ctx.lineTo(outerW, 0);
+                ctx.lineTo(outerW, outerH);
+                ctx.lineTo(0, outerH);
+                ctx.lineTo(0, outerH - indentD);
+                ctx.lineTo(indentD, outerH - indentD);
+                ctx.lineTo(indentD, indentD);
+                ctx.lineTo(0, indentD);
+                ctx.closePath();
+            }
+            ctx.stroke();
+            ctx.restore();
         }
 
-        // 初始绘制
-        drawBase();
+        // 绘制问题4：不规则拐角
+        function drawProblem4(isTranslated) {
+            const canvas = document.getElementById('canvas4');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 30;
+            const W = 9 * scale;
+            const H = 6 * scale;
+            const startX = 120;
+            const startY = 100;
+            
+            ctx.save();
+            ctx.translate(startX, startY);
+            
+            // 外框灰色参考线
+            ctx.beginPath();
+            ctx.strokeStyle = "#eee";
+            ctx.lineWidth = 1;
+            ctx.rect(0, 0, W, H);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.strokeStyle = "#1a73e8";
+            ctx.lineWidth = 3;
+            
+            if (isTranslated) {
+                // 平移后：完整长方形
+                ctx.rect(0, 0, W, H);
+            } else {
+                // 原始：L形/不规则拐角
+                ctx.moveTo(0, 0);
+                ctx.lineTo(W, 0);
+                ctx.lineTo(W, H);
+                ctx.lineTo(W/2, H);
+                ctx.lineTo(W/2, H/2);
+                ctx.lineTo(0, H/2);
+                ctx.closePath();
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 绘制问题5：正方形缺角
+        function drawProblem5(isTranslated) {
+            const canvas = document.getElementById('canvas5');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scale = 18;
+            const side = 16 * scale;
+            const startX = 100;
+            const startY = 80;
+            
+            ctx.save();
+            ctx.translate(startX, startY);
+            
+            // 外框灰色参考线
+            ctx.beginPath();
+            ctx.strokeStyle = "#eee";
+            ctx.lineWidth = 1;
+            ctx.rect(0, 0, side, side);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.strokeStyle = "#1a73e8";
+            ctx.lineWidth = 3;
+            
+            if (isTranslated) {
+                // 平移后：完整正方形（周长不变）
+                ctx.rect(0, 0, side, side);
+            } else {
+                // 原始：阶梯状缺角
+                const cut = side / 4;
+                ctx.moveTo(0, 0);
+                ctx.lineTo(side, 0);
+                ctx.lineTo(side, side - cut);
+                ctx.lineTo(side - cut, side - cut);
+                ctx.lineTo(side - cut, side);
+                ctx.lineTo(0, side);
+                ctx.closePath();
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 统一的绘制函数
+        function drawProblem(n, isTranslated) {
+            switch(n) {
+                case 1: drawProblem1(isTranslated); break;
+                case 2: drawProblem2(isTranslated); break;
+                case 3: drawProblem3(isTranslated); break;
+                case 4: drawProblem4(isTranslated); break;
+                case 5: drawProblem5(isTranslated); break;
+            }
+        }
+
+        // 初始化：绘制所有问题的初始状态
+        for (let i = 1; i <= 5; i++) {
+            drawProblem(i, false);
+        }
     </script>
-    
-    <div class="problems-section">
-        <h2>平移法求周长 练习题（三年级专用）</h2>
-        <p class="mnemonic">口诀：<strong>横线上下来平移，竖线左右来平移，拼成长宽再计算，多出来的加上去</strong></p>
-        
-        <div class="problem">
-            <h3>第1题（楼梯型）</h3>
-            <p>一个楼梯形状图形，最外围长12cm，宽7cm，求周长。</p>
-            <div class="solution">
-                <p><strong>解答：</strong>平移后变成长方形</p>
-                <p>周长：\((12+7)×2 = \boldsymbol{38}\) 厘米</p>
-            </div>
-        </div>
-        
-        <div class="problem">
-            <h3>第2题（凸字形）</h3>
-            <p>凸字形图形，最外面长15cm，高8cm，凸出部分高3cm，求周长。</p>
-            <div class="solution">
-                <p><strong>解答：</strong>平移拼成大长方形，多2条3cm竖边</p>
-                <p>长方形周长：\((15+8)×2=46\) 厘米</p>
-                <p>多加：\(3×2=6\) 厘米</p>
-                <p><strong>总周长：\(\boldsymbol{52}\) 厘米</strong></p>
-            </div>
-        </div>
-        
-        <div class="problem">
-            <h3>第3题（凹字形）</h3>
-            <p>凹进去图形，外围长20cm，宽10cm，凹进去深4cm，求周长。</p>
-            <div class="solution">
-                <p><strong>解答：</strong>平移变长方形，多2条4cm的边</p>
-                <p><strong>总周长：\(\boldsymbol{(20+10)×2 + 4×2 = 68}\) 厘米</strong></p>
-            </div>
-        </div>
-        
-        <div class="problem">
-            <h3>第4题</h3>
-            <p>不规则拐角图形，外围长9米，宽6米，求周长。</p>
-            <div class="solution">
-                <p><strong>解答：</strong>平移刚好变长方形</p>
-                <p><strong>周长：\(\boldsymbol{(9+6)×2 = 30}\) 米</strong></p>
-            </div>
-        </div>
-        
-        <div class="problem">
-            <h3>第5题</h3>
-            <p>正方形缺一个小角（阶梯状），大正方形边长16cm，求周长。</p>
-            <div class="solution">
-                <p><strong>解答：</strong>平移后周长不变，还是正方形周长</p>
-                <p><strong>周长：\(\boldsymbol{16×4 = 64}\) 厘米</strong></p>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
