@@ -148,13 +148,6 @@
                 drawBase();
             },30);
         }
-                // 插值平移
-                stair.forEach(item=>{
-                    item.y = item.oy + (item.ty - item.oy)*t;
-                });
-                drawBase();
-            },30);
-        }
 
         function resetAnim(){
             step = 0;
