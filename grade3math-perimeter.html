@@ -104,6 +104,7 @@
         const ctx = canvas.getContext('2d');
         let step = 0;
         let isRectangle = false;
+        let timer1 = null, timer2 = null; // 存储定时器，用于重置时清除
         const W = 400, H = 240;
         const startX = 100, startY = 60;
 
@@ -166,30 +167,66 @@
         }
 
         function playAnim(){
+            // 清除可能存在的旧定时器
+            if (timer1) clearInterval(timer1);
+            if (timer2) clearInterval(timer2);
             step = 1;
-            isRectangle = false; // 重置矩形标志
-            document.getElementById('tip').innerText = '第二步：开始向上、向右平移线段';
-            let t = 0;
-            const timer = setInterval(()=>{
-                t += 0.05;
-                if(t >= 1){
-                    t = 1;
-                    clearInterval(timer);
-                    isRectangle = true; // 设置为矩形状态
-                    document.getElementById('tip').innerText = '第三步：平移完成，变成长方形，周长不变！';
+            isRectangle = false;
+            stair.forEach(item=>{
+                item.x = item.ox; // x初始化到原始位置
+                item.y = item.oy; // y初始化到原始位置
+            });
+            drawBase();
+            document.getElementById('tip').innerText = '第二步：向上平移横线（y方向）';
+            let t1 = 0;
+            // 第一阶段：向上平移（y方向），t1从0到1
+            timer1 = setInterval(()=>{
+                t1 += 0.05;
+                if(t1 >= 1){
+                    t1 = 1;
+                    clearInterval(timer1);
+                    // y方向平移完成，设置y到目标值
+                    stair.forEach(item=>{
+                        item.y = item.ty;
+                    });
                     drawBase();
+                    document.getElementById('tip').innerText = '第三步：向右平移竖线（x方向）';
+                    let t2 = 0;
+                    // 第二阶段：向右平移（x方向），t2从0到1
+                    timer2 = setInterval(()=>{
+                        t2 += 0.05;
+                        if(t2 >= 1){
+                            t2 = 1;
+                            clearInterval(timer2);
+                            // x方向平移完成，设置x到目标值
+                            stair.forEach(item=>{
+                                item.x = item.tx;
+                            });
+                            isRectangle = true;
+                            document.getElementById('tip').innerText = '第四步：平移完成，变成长方形，周长不变！';
+                            drawBase();
+                            return;
+                        }
+                        // 只平移x，y保持不变
+                        stair.forEach(item=>{
+                            item.x = item.ox + (item.tx - item.ox) * t2;
+                        });
+                        drawBase();
+                    },30);
                     return;
                 }
-                // 插值平移x和y
+                // 只平移y，x保持不变
                 stair.forEach(item=>{
-                    item.x = item.ox + (item.tx - item.ox) * t;
-                    item.y = item.oy + (item.ty - item.oy) * t;
+                    item.y = item.oy + (item.ty - item.oy) * t1;
                 });
                 drawBase();
             },30);
         }
 
         function resetAnim(){
+            // 清除可能存在的定时器
+            if (timer1) { clearInterval(timer1); timer1 = null; }
+            if (timer2) { clearInterval(timer2); timer2 = null; }
             step = 0;
             isRectangle = false; // 重置矩形标志
             document.getElementById('tip').innerText = '第一步：原始楼梯图形';
