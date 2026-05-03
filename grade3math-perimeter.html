@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>平移法求周长 动画讲解</title>
+    <style>
+        body {
+            font-family: "微软雅黑", sans-serif;
+            text-align: center;
+            background: #f5f9ff;
+            padding: 20px;
+        }
+        h2 {
+            color: #1a73e8;
+        }
+        .container {
+            margin: 20px auto;
+        }
+        canvas {
+            background: #fff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        .btn-box {
+            margin: 15px 0;
+        }
+        button {
+            padding: 8px 20px;
+            font-size: 16px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 6px;
+            background: #1a73e8;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0d5bbd;
+        }
+        .tip {
+            font-size: 18px;
+            color: #d93025;
+            margin: 10px 0;
+        }
+        .explain {
+            font-size: 16px;
+            color: #333;
+            width: 600px;
+            margin: 10px auto;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h2>小学三年级 平移法求周长 动画演示</h2>
+    <div class="tip" id="tip">第一步：原始楼梯图形</div>
+    <div class="container">
+        <canvas id="canvas" width="600" height="350"></canvas>
+    </div>
+    <div class="btn-box">
+        <button onclick="playAnim()">开始平移动画</button>
+        <button onclick="resetAnim()">重置</button>
+    </div>
+    <div class="explain" id="explain">
+        原理：把楼梯横着的短线向上平移，竖着的短线向右平移，<br>
+        最后拼成一个完整长方形，周长大小不变，直接用长方形周长公式计算。
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let step = 0;
+        const W = 400, H = 240;
+        const startX = 100, startY = 60;
+
+        // 原始阶梯坐标
+        let lines = [
+            {x1:0,y1:0,x2:W,y2:0, ox1:0,oy1:0,ox2:W,oy2:0},
+            {x1:W,y1:0,x2:W,y2:H, ox1:W,oy1:0,ox2:W,oy2:H},
+            {x1:W,y1:H,x2:0,y2:H, ox1:W,oy1:H,ox2:0,oy2:H},
+            {x1:0,y1:H,x2:0,y2:0, ox1:0,oy1:H,ox2:0,oy2:0}
+        ];
+        // 楼梯台阶分段
+        let stair = [];
+        const seg = 4;
+        let sw = W/seg, sh = H/seg;
+        for(let i=0;i<seg;i++){
+            stair.push({
+                x: i*sw,
+                y: i*sh,
+                ox: i*sw,   // 原始x坐标
+                oy: i*sh,   // 原始y坐标
+                tx: (seg-1)*sw, // 目标x坐标（竖线平移至x=W处）
+                ty: 0        // 目标y坐标（横线平移至y=0处）
+            });
+        }
+
+        function drawBase(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.save();
+            ctx.translate(startX, startY);
+
+            // 外框灰色
+            ctx.beginPath();
+            ctx.strokeStyle="#ccc";
+            ctx.lineWidth=2;
+            ctx.rect(0,0,W,H);
+            ctx.stroke();
+
+            // 画楼梯
+            ctx.beginPath();
+            ctx.strokeStyle="#1a73e8";
+            ctx.lineWidth=3;
+            ctx.moveTo(0,0);
+            for(let i=0;i<seg;i++){
+                ctx.lineTo(stair[i].x + sw, stair[i].y);
+                ctx.lineTo(stair[i].x + sw, stair[i].y + sh);
+            }
+            ctx.lineTo(0,H);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function playAnim(){
+            step = 1;
+            document.getElementById('tip').innerText = '第二步：开始向上、向右平移线段';
+            let t = 0;
+            const timer = setInterval(()=>{
+                t += 0.05;
+                if(t >= 1){
+                    t = 1;
+                    clearInterval(timer);
+                    // 设置最终位置
+                    stair.forEach(item=>{
+                        item.x = item.tx;
+                        item.y = item.ty;
+                    });
+                    document.getElementById('tip').innerText = '第三步：平移完成，变成长方形，周长不变！';
+                    drawBase();
+                    return;
+                }
+                // 插值平移x和y
+                stair.forEach(item=>{
+                    item.x = item.ox + (item.tx - item.ox) * t;
+                    item.y = item.oy + (item.ty - item.oy) * t;
+                });
+                drawBase();
+            },30);
+        }
+                // 插值平移
+                stair.forEach(item=>{
+                    item.y = item.oy + (item.ty - item.oy)*t;
+                });
+                drawBase();
+            },30);
+        }
+
+        function resetAnim(){
+            step = 0;
+            document.getElementById('tip').innerText = '第一步：原始楼梯图形';
+            stair.forEach(item=>{
+                item.x = item.ox; // 重置x到原始位置
+                item.y = item.oy; // 重置y到原始位置
+            });
+            drawBase();
+        }
+
+        // 初始绘制
+        drawBase();
+    </script>
+</body>
+</html>
