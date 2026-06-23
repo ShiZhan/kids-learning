@@ -1,0 +1,13 @@
+# 工作区本地文件
+.workbuddy/
+.playwright-mcp/
+
+# 截图等临时图片
+*.png
+
+# IDE / OS 临时文件
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
